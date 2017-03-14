@@ -12,30 +12,43 @@ class Browser{
 	ExeName := ""
 	__New(Page){
 		p := new Properties()
-		this.Path := this.p.getProperty("iepath")
-		this.ExeName := this.p.getProperty("iexe")
+		this.Path := p.getProperty("iepath")
+		this.ExeName := p.getProperty("iexe")
 		this.createIEObject(Page)
 	}
 	
 	createIEObject(URL := ""){
-		Process, Exist, iexplorer.exe
+		MsgBox % this.Path this.ExeName
+		Process, Exist, % this.ExeName
 		If(!ErrorLevel){
-			this.Pwb := ComObjCreate("InternetExplorer.Application")
+			Run % this.Path . "" . this.ExeName
 		}
-		this.Pwb := this.IEGet()
+		else{
+			WinShow, Internet Explorer
+		}
+		this.Pwb := this.WBGet()
 		this.Pwb.Visible := true
 		this.Pwb.Navigate(URL)
 		this.Pwb.WaitWB()
-	}
+		
+}
 
-IEGet(Name="")        ;Retrieve pointer to existing IE window/tab
-{
-    IfEqual, Name,, WinGetTitle, Name, ahk_class IEFrame
-        Name := ( Name="New Tab - Windows Internet Explorer" ) ? "about:Tabs"
-        : RegExReplace( Name, " - (Windows|Microsoft) Internet Explorer" )
-    For wb in ComObjCreate( "Shell.Application" ).Windows
-        If ( wb.LocationName = Name ) && InStr( wb.FullName, "iexplore.exe" )
-            Return wb
+
+
+;************Pointer to Open IE Window******************
+WBGet(WinTitle="ahk_class IEFrame", Svr#=1) {               ;// based on ComObjQuery docs
+   static msg := DllCall("RegisterWindowMessage", "str", "WM_HTML_GETOBJECT")
+        , IID := "{0002DF05-0000-0000-C000-000000000046}"   ;// IID_IWebBrowserApp
+;//     , IID := "{332C4427-26CB-11D0-B483-00C04FD90119}"   ;// IID_IHTMLWindow2
+   SendMessage msg, 0, 0, Internet Explorer_Server%Svr#%, %WinTitle%
+
+   if (ErrorLevel != "FAIL") {
+      lResult:=ErrorLevel, VarSetCapacity(GUID,16,0)
+      if DllCall("ole32\CLSIDFromString", "wstr","{332C4425-26CB-11D0-B483-00C04FD90119}", "ptr",&GUID) >= 0 {
+         DllCall("oleacc\ObjectFromLresult", "ptr",lResult, "ptr",&GUID, "ptr",0, "ptr*",pdoc)
+         return ComObj(9,ComObjQuery(pdoc,IID,IID),1), ObjRelease(pdoc)
+      }
+   }
 }
 
 clickLink(text := ""){
