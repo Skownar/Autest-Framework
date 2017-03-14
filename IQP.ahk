@@ -64,14 +64,6 @@ class IQP {
 		
 	}
 
-	GetCurrentClassificationSP(){
-		found := false
-		searchedImage = %A_ScriptDir%\classification_title.png
-		while !found {
-			found := findSearchImg(searchedImage)
-		}
-		return this.GetCurrentClassification()
-	}
 	
 	;TODO : Verify if Classification panel is closed 
 	SetClassification(classification){
