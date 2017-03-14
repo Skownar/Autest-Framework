@@ -3,6 +3,7 @@
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 SetTitleMatchMode, RegEx
+DetectHiddenWindows, On
 #Include Properties.ahk
 
 class Browser{
@@ -10,6 +11,7 @@ class Browser{
 	Pwb := ""
 	Path := ""
 	ExeName := ""
+	Flag := ""
 	__New(Page){
 		p := new Properties()
 		this.Path := p.getProperty("iepath")
@@ -18,18 +20,12 @@ class Browser{
 	}
 	
 	createIEObject(URL := ""){
-		MsgBox % this.Path this.ExeName
-		Process, Exist, % this.ExeName
-		If(!ErrorLevel){
-			Run % this.Path . "" . this.ExeName
-		}
-		else{
-			WinShow, Internet Explorer
-		}
-		this.Pwb := this.WBGet()
-		this.Pwb.Visible := true
+		this.Pwb := ComObjCreate("InternetExplorer.Application")
+		this.Pwb.visible:=true
 		this.Pwb.Navigate(URL)
-		this.Pwb.WaitWB()
+		this.Pwb := this.WBGet()
+		this.WaitWB()
+
 		
 }
 
@@ -76,9 +72,7 @@ clickLink(text := ""){
 	}
 	
 	WaitWB(){
-		while this.Pwb.busy OR this.Pwb.ReadyState != 4 OR this.Pwb.Document.Readystate <> "Complete" {
-			;Wait for page to load
+		while This.Pwb.busy or This.Pwb.ReadyState != 4 ;Wait for page to load
 			Sleep, 100
-		}
 	}
 }
