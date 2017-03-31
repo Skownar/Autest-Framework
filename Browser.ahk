@@ -1,11 +1,4 @@
-﻿#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
-; #Warn  ; Enable warnings to assist with detecting common errors.
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-SetTitleMatchMode, RegEx
-DetectHiddenWindows, On
-#Include Properties.ahk
-
+﻿DetectHiddenWindows, On
 class Browser{
 	
 	Pwb := ""
@@ -13,6 +6,7 @@ class Browser{
 	ExeName := ""
 	Flag := ""
 	__New(Page){
+		FileWrite("|INTERNET EXPLORER| initialization ")
 		p := new Properties()
 		this.Path := p.getProperty("iepath")
 		this.ExeName := p.getProperty("iexe")
@@ -20,13 +14,13 @@ class Browser{
 	}
 	
 	createIEObject(URL := ""){
-		this.Pwb := ComObjCreate("InternetExplorer.Application")
-		this.Pwb.visible:=true
+		FileWrite("|INTERNET EXPLORER| running D5E8041D-920F-45e9-B8FB-B1DEB82C6E5E (medium) mode")
+		this.Pwb := ComObjCreate("{D5E8041D-920F-45e9-B8FB-B1DEB82C6E5E}")   ;// Create an IE object
+		this.Pwb.Visible := true                                  ;// Make the IE object visible              
+		loading := true            ;// Set the variable "loading" as TRUE
 		this.Pwb.Navigate(URL)
-		this.Pwb := this.WBGet()
 		this.WaitWB()
-
-		
+		WinMaximize, ahk_class IEFrame
 }
 
 
@@ -50,7 +44,8 @@ WBGet(WinTitle="ahk_class IEFrame", Svr#=1) {               ;// based on ComObjQ
 clickLink(text := ""){
 		found := False
 		this.WaitWB()
-		Links := this  .Pwb.Document.Links ; collection of hyperlinks on the page
+		Links := this.Pwb.Document.Links ; collection of hyperlinks on the page
+		FileWrite("|INTERNET EXPLORER| looking for link with text {" . text . "}")
 		Loop % Links.Length{ ; Loop through links  // TO FUNC
 			If ((Link := Links[A_Index-1].InnerText) != "") { 
 				(OuterHTML := Links[A_Index-1].OuterHTML) 
@@ -64,15 +59,21 @@ clickLink(text := ""){
 			}
 			If (Links[A_Index-1].InnerText = text) {
 				found := True
+				FileWrite("|INTERNET EXPLORER| link  {" . text . "} found")
 				Links[A_Index-1].click()				
 				Break
+			}
+			else{
+				found := False
+				FileWrite("|INTERNET EXPLORER| link with text {" . text . "} not found")
 			}
 		}
 		return found
 	}
 	
 	WaitWB(){
-		while This.Pwb.busy or This.Pwb.ReadyState != 4 ;Wait for page to load
+		while this.Pwb.Busy or this.Pwb.ReadyState != 4 ;Wait for page to load
 			Sleep, 100
+	
 	}
 }

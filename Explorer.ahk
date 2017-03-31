@@ -1,6 +1,4 @@
-#Include functions.ahk
-
-class FileExplorer{
+class FileExplorer {
 	
 	Run(path = ""){
 		Run , % "explorer.exe " , path
@@ -20,6 +18,7 @@ class FileExplorer{
 	}
 	
 	OpenContextualOnSelectedFile(path = "" , file = ""){
+		FileWrite("|EXPLORER| try opening file {" . path . "\" . file . "}")
 		SetTitleMatchMode RegEx 
 		selection = %path%\%file%
 		MsgBox % A_Desktop
@@ -31,6 +30,7 @@ class FileExplorer{
 	}
 	
 	OpenContext2(path, menu, validate=True){
+	FileWrite("|EXPLORER| try opening file {" . path . "}  menu " . menu)
 	;by A_Samurai
 	;v 1.0.1 http://sites.google.com/site/ahkref/custom-functions/invokeverb
     objShell := ComObjCreate("Shell.Application")
@@ -55,25 +55,15 @@ class FileExplorer{
 					WinWait Classification
 					WinActivate Classification
 				}
+				
                 Return True
             }
         }
         Return False
-    } else
+    } else{
         objFolderItem.InvokeVerbEx(Menu)
 		
 	}
-	
-	OpenIQP(){
-		found := false
-		;TODO : property
-		searchedImage = %A_ScriptDir%\classification_contextual_icon.png
-		While ! found {
-			found := findSearchImg(searchedImage)
-			Sleep 20
-		}
-		if (found){
-			ClickSearchImg(searchedImage)
-		}
-	}	
+	}
 }
+

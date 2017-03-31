@@ -1,15 +1,16 @@
-﻿#Include Browser.ahk
-#Include functions.ahk
-#NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
-; #Warn  ; Enable warnings to assist with detecting common errors.
-SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-SetTitleMatchMode, RegEx
+﻿class Sharepoint extends Browser{
+	pathOkButton := ""
+	pathBrowseButton := ""
 
-class Sharepoint extends Browser{
-	
-	__New(Page){
-		base.__New(Page)
+	__New(page){
+		base.__New(page)
+		location = %A_ScriptDir%\..\..\Lib\Properties\images.properties
+		p := new Properties(location)
+		this.pathBrowseButton := p.getProperty("SpBrowseButton")
+		this.pathOkButton  := p.getProperty("SpOkButton")
+		this.waitingimage := p.getProperty("SpWaiting")
+		FileWrite("|SHAREPOINT| connected to " . page)
+
 	}
 	
 	;; TODO : maybe remove ?
@@ -39,23 +40,49 @@ class Sharepoint extends Browser{
 	}
 	
 	uploadFile(dir = "", filename = ""){
-		searchedImage := A_ScriptDir . "\browse_input.png"
+	    FileWrite("|SHAREPOINT| try upload {" . dir . "\" . filename . "} ")
+
+		searchedImage := A_ScriptDir . "\" . this.pathBrowseButton
 		found := false
 		while !found {
-			found := clickSearchImg(searchedImage)
+			Sleep 20
+			found := findSearchImg(searchedImage)
+			
 		}
+		if found 
+		{
+			FileWrite("|SHAREPOINT| click on Browse... button")
+			clickSearchImg(searchedImage)
+		}
+		FileWrite("|SHAREPOINT| waiting for Explorer appears")	
 		WinWait, Choose File to Upload
 		WinActivate, Choose File to Upload 
+		FileWrite("|SHAREPOINT| write {" . dir . "} in top bar")	
 		clickCtrlByClass("Choose File to Upload","ToolbarWindow322",0.99,0.5)
 		Send %dir% {Enter}
+		FileWrite("|SHAREPOINT| write {" . filename . "} in down bar")
 		clickCtrlByClass("Choose File to Upload","Edit1",0.9,0.5)
 		Send %filename%
 		Sleep 500
+		FileWrite("|SHAREPOINT| click on OkButton")
 		clickCtrlByClass("Choose File to Upload","Button1",0.5,0.5)
-		searchedImage := A_ScriptDir . "\sharepoint_upload_okButton.png"		
+		Sleep 500
+		Loop, 5 {
+			Sleep 200
+			Send {TAB}
+		}	
+		Sleep 200
+		Send {Enter}
+	}	
+	WaitBetweenUploads(){
+		searchedImage := A_ScriptDir . "\" . this.waitingimage
 		found := false
-		while ! found {
-			found := clickSearchImg(searchedImage)
+		while !found {
+			Sleep 200
+			found := findSearchImg(searchedImage)
+		}
+		if(found){
+			FileWrite("|SHAREPOINT| ready for other upload")
 		}
 	}
-}	
+}

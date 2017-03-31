@@ -1,15 +1,28 @@
-global debug := true
+getTimestamp(){
+	FormatTime, CurrentTime,, Time
+	FormatTime, CurrentDate,, ShortDate
+	Return CurrentDate . " - " . CurrentTime
+}
 
-FileWriteSuccess(file,message){
+FileWriteSuccess(message =""){
+	file := FileOpen(logfile, "a")	
 	FormatTime, CurrentTime,, Time 
 	FormatTime, CurrentDate,, ShortDate	
 	file.WriteLine("[Success]" . CurrentDate . " " . CurrentTime . " : " . message . "`r`n")
 }
 
-FileWriteError(file,message){
+FileWriteError(message =""){
+	file := FileOpen(logfile, "a")	
 	FormatTime, CurrentTime,, Time 
 	FormatTime, CurrentDate,, ShortDate	
 	file.WriteLine("[Error]" . CurrentDate . " " . CurrentTime . " : " . message . "`r`n")	
+}
+
+FileWrite(message =""){
+	file := FileOpen(logfile, "a")	
+	FormatTime, CurrentTime,, Time 
+	FormatTime, CurrentDate,, ShortDate	
+	file.WriteLine(CurrentDate . " " . CurrentTime . " : " . message . "`r`n")
 }
 
 clickCtrlByClass(win = "",controle = "",posX=0,posY=0){
@@ -60,6 +73,7 @@ findSearchImg(searchedImage,button = 0){
 		found := False
 	If ErrorLevel = 0
 		found := True
+	Sleep 100
 	Return, found
 }
 
