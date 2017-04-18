@@ -2,10 +2,12 @@ class PowerPoint{
     ExeName := ""
     PPO := ""
 
-    __New(){
+    __New()
+    {
         base.__New()
         this.ExeName := this.p.getProperty("ppexe")
     }
+
     Run()
     {
         FileWrite("|POWERPOINT| run Application")
@@ -16,15 +18,16 @@ class PowerPoint{
         this.PPO.Presentations.Add()
         this.PPO.ActivePresentation.Slides.Add(1,12)
     }
+
     WriteInTextBox(str,posX,posY,width,height)
     {
         FileWrite("|POWERPOINT| write {" . str . "} in textbox")
         this.PPO.ActivePresentation.Slides(1).Shapes.AddTextbox(1,posX,posY,width,height).TextFrame.TextRange.Text := str
     }
+
     ;TODO : verif if file exist
     SaveAs(location,filename,formatstr)
     {
-
         savepoint := location . "\" . filename
 		if(formatstr = "pdf" OR formatstr = "PDF" OR formatstr= "Pdf")
 			format = 32
@@ -36,6 +39,7 @@ class PowerPoint{
 
         Return savepoint . "." . formatstr
     }
+
     Close(save)
     {
         if(!save)
@@ -43,4 +47,5 @@ class PowerPoint{
         this.PPO.Quit()
        FileWrite("|POWERPOINT| close Application")
     }
+
 }

@@ -10,9 +10,10 @@
 #Include %A_ScriptDir%\..\..\Lib\PowerPoint.ahk
 #Include %A_ScriptDir%\..\..\Lib\Explorer.ahk
 #Include %A_ScriptDir%\..\..\Lib\CLR.ahk
-#Include %A_ScriptDir%\..\..\Lib\TextFinder.ahk
+#Include %A_ScriptDir%\..\..\Lib\OCR.ahk
 
 #Include %A_ScriptDir%\..\..\Lib\Zip.ahk
 #Include %A_ScriptDir%\..\..\Lib\IQP.ahk
 
 #Include %A_Scriptdir%\..\..\Lib\Xml.ahk
+#Include %A_ScriptDir%\..\..\Lib\DotStat.ahk
