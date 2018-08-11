@@ -11,7 +11,7 @@ SetTitleMatchMode RegEx
 SetKeyDelay, 150,200
 
 
-sp := new Sharepoint("http://dc.uat.nbb/SitePages/Home.aspx")
+sp := new Sharepoint("http://addresssharepointsite")
 oe := new FileExplorer()
 oiqp := new IQP()
 
@@ -43,7 +43,7 @@ while found <> True {
 /*
  DOCX
 */
-oiqp.OpenClassificationWindow("\\dc.uat.nbb\DavWWWRoot\tests2016\nbb-public\noclass.docx")
+oiqp.OpenClassificationWindow("addresssharepointdoc")
 classif := oiqp.GetCurrentClassification()
 MsgBox % classif
 if(classif = "public"){
@@ -58,7 +58,7 @@ oiqp.CommitSharePoint()
 PDF
 */
 
-oiqp.OpenClassificationWindow("\\dc.uat.nbb\DavWWWRoot\tests2016\nbb-public\noclass.pdf")
+oiqp.OpenClassificationWindow("addresssharepointdoc")
 classif := oiqp.GetCurrentClassification()
 MsgBox % classif
 if(classif = "public"){
