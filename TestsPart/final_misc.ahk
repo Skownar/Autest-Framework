@@ -14,7 +14,6 @@ op := new Properties()
 ;SCRIPTS
 
 ow.Run()
-ow.WriteText("NBB TEST DOCUMENT")
 ow.Save(A_Desktop, "test.pdf", "pdf")
 ow.Close()
 
